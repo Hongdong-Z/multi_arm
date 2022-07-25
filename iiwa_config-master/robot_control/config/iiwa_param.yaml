@@ -1,0 +1,12 @@
+robot_name: iiwa                     # iiwa               panda
+arm_name: iiwa_arm                   # iiwa_arm           panda_arm
+left_arm_name: left_iiwa_arm         # left_iiwa_arm      left_panda_arm
+right_arm_name: right_iiwa_arm       # right_iiwa_arm     right_panda_arm
+both_arm_name: both_iiwa_arm         # both_iiwa_arm      both_panda_arm
+left_end_effector: left_link_ee   # left_link_ee       panda_left_link8
+right_end_effector: right_link_ee # right_link_ee      panda_right_link8
+left_joint: left_joint_          # left_joint_        panda_left_joint
+right_joint: right_joint_        # right_joint_       panda_right_joint
+arm_name_left_temp: left        # left               panda_left
+arm_name_right_temp: right      # right              panda_right
+joint_name_temp: _joint_               # _joint_            _joint

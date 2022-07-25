@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: comau_nj290_description
+    relative_path: urdf/dual_comau.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/comau.srdf
+  CONFIG:
+    author_name: Hongdong
+    author_email: uitfw@student.kit.edu
+    generated_timestamp: 1657272972

@@ -1,0 +1,44 @@
+<launch>
+  <arg name="debug" default="false"/>
+  <arg name="avoid_obstacles" default="false"/>
+  <arg name="iiwa" default="false"/>
+  <arg name="panda" default="false"/>
+  <arg name="comau" default="false"/>
+  <arg name="yaml_path" default="$(find robot_control)/config/panda_param.yaml"  if="$(arg panda)"/>
+  <arg name="yaml_path" default="$(find robot_control)/config/iiwa_param.yaml"  if="$(arg iiwa)"/>
+  <arg name="yaml_path" default="$(find robot_control)/config/comau_param.yaml"  if="$(arg comau)"/>
+  
+  
+  <node pkg="robot_control" name="moveit_server" type="moveit_server.py" output="screen">
+    <param name="yaml_path" type="str" value="$(arg yaml_path)"/>
+  
+
+  </node>
+
+  <node pkg="robot_control" name="nonblocking_dual_driver" type="nonblocking_dual_driver" output="screen" if="$(arg iiwa)">
+    <param name="yaml_path" type="str" value="$(arg yaml_path)"/>
+    <rosparam
+      file="$(find robot_control)/config/iiwa_param.yaml"
+      command="load"
+      />
+      
+  </node>
+  
+    <node pkg="robot_control" name="nonblocking_dual_driver" type="nonblocking_dual_driver" output="screen" if="$(arg panda)">
+    <rosparam
+      file="$(find robot_control)/config/panda_param.yaml"
+      command="load"
+      />
+  </node>
+  <node pkg="robot_control" name="nonblocking_dual_driver" type="nonblocking_dual_driver" output="screen"  if="$(arg comau)">
+    <param name="yaml_path" type="str" value="$(arg yaml_path)"/>
+    <rosparam
+      file="$(find robot_control)/config/comau_param.yaml"
+      command="load"
+      />
+      
+  </node>
+  <node pkg="robot_control" name="symb_maneuver_converter" type="symb_maneuver_converter.py" output="screen">
+   <param name="yaml_path" type="str" value="$(arg yaml_path)"/>
+  </node>
+</launch>

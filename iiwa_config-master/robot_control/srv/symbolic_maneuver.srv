@@ -1,0 +1,7 @@
+string robot_endeffector_frame_name
+string start_wypt
+string goal_wypt
+string action_type
+---
+bool success_failure
+

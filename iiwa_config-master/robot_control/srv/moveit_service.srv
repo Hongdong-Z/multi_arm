@@ -1,0 +1,7 @@
+string arm_name
+sensor_msgs/JointState start_config
+geometry_msgs/Pose goal_pose
+string action_type
+---
+trajectory_msgs/JointTrajectoryPoint[] traj_pts
+bool succeeded

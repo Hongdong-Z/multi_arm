@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: franka_description
+    relative_path: robots/dual_panda.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/panda.srdf
+  CONFIG:
+    author_name: Hongdong
+    author_email: uitfw@student.kit.edu
+    generated_timestamp: 1649410081

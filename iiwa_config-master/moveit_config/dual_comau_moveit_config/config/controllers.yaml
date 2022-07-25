@@ -1,0 +1,27 @@
+controller_list:
+  - name: left_comau_arm_controller
+    action_ns: follow_joint_trajectory
+    joints:
+      - comau_left_joint_1
+      - comau_left_joint_2
+      - comau_left_joint_3
+      - comau_left_joint_4
+      - comau_left_joint_5
+      - comau_left_joint_6
+  - name: right_comau_arm_controller
+    action_ns: follow_joint_trajectory
+    joints:
+      - comau_right_joint_1
+      - comau_right_joint_2
+      - comau_right_joint_3
+      - comau_right_joint_4
+      - comau_right_joint_5
+      - comau_right_joint_6
+  - name: left_hand_controller
+    type: GripperCommand
+    joints:
+      []
+  - name: right_hand_controller
+    type: GripperCommand
+    joints:
+      []

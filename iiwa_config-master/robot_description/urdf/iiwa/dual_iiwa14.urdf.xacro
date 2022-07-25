@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<robot name="iiwa14" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <!-- Import Rviz colors -->
+   <!--grey-->
+  <material name="grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  <material name="black">
+    <color rgba="0.0 0.0 0.0  1.0"/>
+  </material>
+  <xacro:include filename="$(find iiwa_description)/urdf/materials.xacro" />
+  <!--Import the lbr iiwa macro -->
+  <xacro:include filename="$(find iiwa_description)/urdf/iiwa14.xacro"/>
+  
+  <xacro:arg name="hardware_interface" default="PositionJointInterface"/>
+  <xacro:arg name="robot_name" default="iiwa"/>
+  <xacro:arg name="origin_xyz" default="0 0 0"/>
+  <xacro:arg name="origin_rpy" default="0 0 0"/>
+  
+  <!-- Fix to world just for testing -->
+  <link name="world"/>
+  
+  <!--iiwa-->
+  <!--left-->
+  <xacro:iiwa14 hardware_interface="$(arg hardware_interface)" robot_name="left" parent="world">
+    <origin xyz="0 0 0 " rpy="0 0 3.14" />
+  </xacro:iiwa14>
+  <!--right-->
+  <xacro:iiwa14 hardware_interface="$(arg hardware_interface)" robot_name="right" parent="world">
+    <origin xyz="0 1.6 0" rpy="0 0 0" />
+  </xacro:iiwa14>
+  <!--add scenes-->
+  <link name="scenes">
+    <visual>
+      <origin rpy="0 3.14 1.57" xyz="0 -0.8 -0.51"/>
+      <geometry>
+        <mesh filename="package://robot_description/meshes/iiwa/scenes.stl" scale="0.04 0.04 0.04"/>
+      </geometry>
+      <material name="Grey"/>
+    </visual>
+    <collision>
+      <origin rpy="0 3.14 1.57" xyz="0 -0.8 -0.51"/>
+      <geometry>
+        <mesh filename="package://robot_description/meshes/iiwa/scenes.stl" scale="0.04 0.04 0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_scenes_to_world" type="fixed">
+    <parent link="left_link_0"/>
+    <child link="scenes"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <joint name="right_scenes_to_world" type="fixed">
+    <parent link="right_link_0"/>
+    <child link="scenes"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  <!--add tool-->
+  <link name="tooling">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/meshes/iiwa/tool.stl"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/meshes/iiwa/tool.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left_tool_to_joint7" type="fixed">
+    <parent link="left_link_ee"/>
+    <child link="tooling"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+
+  <link name="right_tooling">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/meshes/iiwa/tool.stl"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://robot_description/meshes/iiwa/tool.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right_tool_to_joint7" type="fixed">
+    <parent link="right_link_ee"/>
+    <child link="right_tooling"/>
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+  </joint>
+  
+  <!--add TCP_L-->
+  <link name="tcp_l">
+  </link>
+  <joint name="tcp_l_to_link_ee" type="fixed">
+    <parent link="left_link_ee"/>
+    <child link="tcp_l"/>
+    <origin rpy="-0.7854 0 0" xyz="0 -0.02 0.435"/>
+  </joint>
+  <!--add TCP_R-->
+  <link name="tcp_r">
+  </link>
+  <joint name="tcp_r_to_link_ee" type="fixed">
+    <parent link="right_link_ee"/>
+    <child link="tcp_r"/>
+    <origin rpy="0.7854 0 0" xyz="0 -0.02 0.435"/>
+  </joint>
+  
+</robot>

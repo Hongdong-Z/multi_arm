@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="iiwa" default="false"/>
+	<arg name="panda" default="false"/>
+	<arg name="comau" default="false"/>
+
+	<group if="$(arg iiwa)">
+		<arg name="transmission_hw_interface" default="hardware_interface/PositionJointInterface" />
+		<param name="robot_description" command="$(find xacro)/xacro '$(find robot_description)/urdf/iiwa/dual_iiwa14.urdf.xacro' transmission_hw_interface:=$(arg transmission_hw_interface)" />
+		<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" >
+			<param name="use_gui" value="true"/>
+		</node>
+		<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find robot_description)/launch/urdf.rviz" />
+	</group>
+
+	<group if="$(arg panda)">
+	  	<arg name="load_gripper" default="true" />
+  		<arg name="robot_ip" />
+  		<arg name="publish_rate" default="30" />
+
+ 		<param name="robot_description" command="$(find xacro)/xacro $(find franka_description)/robots/dual_panda.urdf.xacro hand:=$(arg load_gripper)" />
+
+  		<node name="joint_state_publisher" type="joint_state_publisher" pkg="joint_state_publisher" output="screen">
+  		</node>
+
+  		<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+  		<node pkg="rviz" type="rviz" output="screen" name="rviz" args="-d $(find robot_description)/launch/urdf.rviz"/>
+	</group>
+
+	
+</launch>

@@ -1,0 +1,317 @@
+<launch>
+
+    <arg name="iiwa" default="false"/>
+    <arg name="panda" default="false"/>
+    <arg name="comau" default="false"/>
+
+    <group if="$(arg iiwa)">
+        <!-- specify the planning pipeline -->
+        <arg name="pipeline" default="ompl" />
+
+        <!-- By default, we do not start a database (it can be large) -->
+        <arg name="db" default="false" />
+        <!-- Allow user to specify database location -->
+        <arg name="db_path" default="$(find dual_iiwa_moveit_config)/default_warehouse_mongo_db" />
+
+        <!-- By default, we are not in debug mode -->
+        <arg name="debug" default="false" />
+
+        <!-- By default, we will load or override the robot_description -->
+        <arg name="load_robot_description" default="true"/>
+
+        <!-- Set execution mode for fake execution controllers -->
+        <arg name="execution_type" default="interpolate" />
+
+        <!--
+        By default, hide joint_state_publisher's GUI
+
+        MoveIt!'s "demo" mode replaces the real robot driver with the joint_state_publisher.
+        The latter one maintains and publishes the current joint configuration of the simulated robot.
+        It also provides a GUI to move the simulated robot around "manually".
+        This corresponds to moving around the real robot without the use of MoveIt.
+        -->
+        <arg name="use_gui" default="false" />
+        <arg name="use_rviz" default="true" />
+
+        <!-- If needed, broadcast static tf for robot root -->
+
+
+        <!-- We do not have a robot connected, so publish fake joint states -->
+        <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="$(arg use_gui)">
+            <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+        </node>
+        <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" if="$(arg use_gui)">
+            <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+        </node>
+
+
+        <!-- Given the published joint states, publish tf for the robot links -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
+        <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
+        <include file="$(find dual_iiwa_moveit_config)/launch/move_group.launch">
+            <arg name="allow_trajectory_execution" value="true"/>
+            <arg name="fake_execution" value="true"/>
+            <arg name="execution_type" value="$(arg execution_type)"/>
+            <arg name="info" value="true"/>
+            <arg name="debug" value="$(arg debug)"/>
+            <arg name="pipeline" value="$(arg pipeline)"/>
+            <arg name="load_robot_description" value="$(arg load_robot_description)"/>
+        </include>
+
+        <!-- Run Rviz and load the default config to see the state of the move_group node -->
+        <include file="$(find dual_iiwa_moveit_config)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
+            <arg name="rviz_config" value="$(find dual_iiwa_moveit_config)/launch/moveit.rviz"/>
+            <arg name="debug" value="$(arg debug)"/>
+        </include>
+
+        <!-- If database loading was enabled, start mongodb as well -->
+        <include file="$(find dual_iiwa_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
+            <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
+        </include>
+        
+
+        <!--include file="$(find add_tf)/launch/add_all_tf.launch" /-->
+
+        <!--TF-->
+        <node pkg="tf" type="static_transform_publisher" name="wypt_l_seg1_start"
+         args="0 0.5 0.25 0 0 -3.14159 world wypt_l_seg1_start 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_coupler_coupling"
+         args="0 0.7 0.5 0 0 -3.14159 world wypt_m_coupler_coupling 100" />
+        
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_coupler_mag"
+         args="0.25 0.8 -0.005 0 0 -3.14159 world wypt_m_coupler_mag 100" />
+ 
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_fixture"
+         args="-0.35 0.55 0.15 0 0 0 world wypt_m_fixture 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_l_manuf_start" 
+         args="0 0 -0.05 0 0 0 wypt_l_seg1_start wypt_l_manuf_start 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_seg1_end" 
+         args="0 -0.2 0 0 0 0 wypt_l_seg1_start wypt_m_seg1_end 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_seg2_start" 
+         args="-0.02 -0.06 0 0 0 0 wypt_m_seg1_end wypt_m_seg2_start 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_seg2_end" 
+         args="0.15 0 0 0 0 0 wypt_m_seg2_start wypt_m_seg2_end 100" />
+
+
+
+        
+        <node pkg="import_manipulate_modul" name="imkm" type="imkm" output="screen">
+            <rosparam
+            file="$(find robot_control)/config/iiwa_param.yaml"
+            command="load"
+            />
+        </node>   
+
+    </group>
+
+    <group if="$(arg panda)">
+        <!-- specify the planning pipeline -->
+        <arg name="pipeline" default="ompl" />
+
+        <!-- By default, we do not start a database (it can be large) -->
+        <arg name="db" default="false" />
+        <!-- Allow user to specify database location -->
+        <arg name="db_path" default="$(find dual_panda_moveit_config)/default_warehouse_mongo_db" />
+
+        <!-- By default, we are not in debug mode -->
+        <arg name="debug" default="false" />
+
+        <!-- By default, we will load or override the robot_description -->
+        <arg name="load_robot_description" default="true"/>
+
+        <!-- Set execution mode for fake execution controllers -->
+        <arg name="fake_execution_type" default="interpolate" />
+
+        <!--
+        By default, hide joint_state_publisher's GUI
+
+        MoveIt!'s "demo" mode replaces the real robot driver with the joint_state_publisher.
+        The latter one maintains and publishes the current joint configuration of the simulated robot.
+        It also provides a GUI to move the simulated robot around "manually".
+        This corresponds to moving around the real robot without the use of MoveIt.
+        -->
+        <arg name="use_gui" default="false" />
+        <arg name="use_rviz" default="true" />
+
+        <!-- If needed, broadcast static tf for robot root -->
+
+
+        <!-- We do not have a robot connected, so publish fake joint states -->
+        <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="$(arg use_gui)">
+            <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+        </node>
+        <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" if="$(arg use_gui)">
+            <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+        </node>
+
+
+        <!-- Given the published joint states, publish tf for the robot links -->
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
+        <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
+        <include file="$(find dual_panda_moveit_config)/launch/move_group.launch">
+            <arg name="allow_trajectory_execution" value="true"/>
+            <arg name="fake_execution" value="true"/>
+            <arg name="fake_execution_type" value="$(arg fake_execution_type)" />
+            <arg name="info" value="true"/>
+            <arg name="debug" value="$(arg debug)"/>
+            <arg name="pipeline" value="$(arg pipeline)"/>
+            <arg name="load_robot_description" value="$(arg load_robot_description)"/>
+        </include>
+
+        <!-- Run Rviz and load the default config to see the state of the move_group node -->
+        <include file="$(find dual_panda_moveit_config)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
+            <arg name="rviz_config" value="$(find dual_panda_moveit_config)/launch/moveit.rviz"/>
+            <arg name="debug" value="$(arg debug)"/>
+        </include>
+
+        <!-- If database loading was enabled, start mongodb as well -->
+        <include file="$(find dual_panda_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
+            <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
+        </include>
+
+
+        <!--include file="$(find add_tf)/launch/add_all_tf.launch" /-->
+        <!--TF-->
+        <node pkg="tf" type="static_transform_publisher" name="wypt_l_seg1_start"
+         args="0.52 0 0.32 -6.28 0 -3.14159 world wypt_l_seg1_start 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_coupler_coupling"
+         args="0.52 0 0.2 6.28 0 -3.14159 world wypt_m_coupler_coupling 100" />
+        
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_coupler_mag"
+         args="0.52 0 0.28 6.28 0 -3.14159 world wypt_m_coupler_mag 100" />
+ 
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_fixture"
+         args="-0.35 0.55 0.15 0 0 0 world wypt_m_fixture 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_l_manuf_start" 
+         args="0.0 0.0 -0.05 0 0 0 wypt_l_seg1_start wypt_l_manuf_start 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_seg1_end" 
+         args="0 0 0.05 0 0 0 wypt_l_seg1_start wypt_m_seg1_end 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_seg2_start" 
+         args="0 0 0.2 0 0 0 wypt_m_seg1_end wypt_m_seg2_start 100" />
+
+        <node pkg="tf" type="static_transform_publisher" name="wypt_m_seg2_end" 
+         args="0 0 -0.2 0 0 0 wypt_m_seg2_start wypt_m_seg2_end 100" />
+
+
+
+
+        <node pkg="import_manipulate_modul" name="imkm" type="imkm" output="screen">
+            <rosparam
+            file="$(find robot_control)/config/panda_param.yaml"
+            command="load"
+            />
+        </node>  
+   
+   
+    </group>
+
+    <group if="$(arg comau)">
+      <!-- specify the planning pipeline -->
+	  <arg name="pipeline" default="ompl" />
+
+	  <!-- By default, we do not start a database (it can be large) -->
+	  <arg name="db" default="false" />
+	  <!-- Allow user to specify database location -->
+	  <arg name="db_path" default="$(find dual_comau_moveit_config)/default_warehouse_mongo_db" />
+
+	  <!-- By default, we are not in debug mode -->
+	  <arg name="debug" default="false" />
+
+	  <!-- By default, we will load or override the robot_description -->
+	  <arg name="load_robot_description" default="true"/>
+
+	  <!-- Set execution mode for fake execution controllers -->
+	  <arg name="fake_execution_type" default="interpolate" />
+
+	  <!--
+	  By default, hide joint_state_publisher's GUI
+
+	  MoveIt!'s "demo" mode replaces the real robot driver with the joint_state_publisher.
+	  The latter one maintains and publishes the current joint configuration of the simulated robot.
+	  It also provides a GUI to move the simulated robot around "manually".
+	  This corresponds to moving around the real robot without the use of MoveIt.
+	  -->
+	  <arg name="use_gui" default="false" />
+	  <arg name="use_rviz" default="true" />
+
+	  <!-- If needed, broadcast static tf for robot root -->
+
+
+	  <!-- We do not have a robot connected, so publish fake joint states -->
+	  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" unless="$(arg use_gui)">
+	    <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+	  </node>
+	  <node name="joint_state_publisher" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" if="$(arg use_gui)">
+	    <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+	  </node>
+
+	  <!-- Given the published joint states, publish tf for the robot links -->
+	  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" />
+
+	  <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
+	  <include file="$(find dual_comau_moveit_config)/launch/move_group.launch">
+	    <arg name="allow_trajectory_execution" value="true"/>
+	    <arg name="fake_execution" value="true"/>
+	    <arg name="fake_execution_type" value="$(arg fake_execution_type)" />
+	    <arg name="info" value="true"/>
+	    <arg name="debug" value="$(arg debug)"/>
+	    <arg name="pipeline" value="$(arg pipeline)"/>
+	    <arg name="load_robot_description" value="$(arg load_robot_description)"/>
+	  </include>
+
+	  <!-- Run Rviz and load the default config to see the state of the move_group node -->
+	  <include file="$(find dual_comau_moveit_config)/launch/moveit_rviz.launch" if="$(arg use_rviz)">
+	    <arg name="rviz_config" value="$(find dual_comau_moveit_config)/launch/moveit.rviz"/>
+	    <arg name="debug" value="$(arg debug)"/>
+	  </include>
+
+	  <!-- If database loading was enabled, start mongodb as well -->
+	  <include file="$(find dual_comau_moveit_config)/launch/default_warehouse_db.launch" if="$(arg db)">
+	    <arg name="moveit_warehouse_database_path" value="$(arg db_path)"/>
+	  </include>
+		<!--TF-->
+		<node pkg="tf" type="static_transform_publisher" name="wypt_l_seg1_start"
+		 args="2.02 0 0.32 -6.28 0 -3.14159 world wypt_l_seg1_start 100" />
+
+		<node pkg="tf" type="static_transform_publisher" name="wypt_m_coupler_coupling"
+		 args="2.02 0 0.2 6.28 0 -3.14159 world wypt_m_coupler_coupling 100" />
+		
+		<node pkg="tf" type="static_transform_publisher" name="wypt_m_coupler_mag"
+		 args="2.02 0 1.28 6.28 0 -3.14159 world wypt_m_coupler_mag 100" />
+	 
+		<node pkg="tf" type="static_transform_publisher" name="wypt_m_fixture"
+		 args="2.25 0.55 0.15 0 0 0 world wypt_m_fixture 100" />
+
+		<node pkg="tf" type="static_transform_publisher" name="wypt_l_manuf_start" 
+		 args="0.0 0.0 -0.05 0 0 0 wypt_l_seg1_start wypt_l_manuf_start 100" />
+
+		<node pkg="tf" type="static_transform_publisher" name="wypt_m_seg1_end" 
+		 args="0 0 0.05 0 0 0 wypt_l_seg1_start wypt_m_seg1_end 100" />
+
+		<node pkg="tf" type="static_transform_publisher" name="wypt_m_seg2_start" 
+		 args="0 0 0.2 0 0 0 wypt_m_seg1_end wypt_m_seg2_start 100" />
+
+		<node pkg="tf" type="static_transform_publisher" name="wypt_m_seg2_end" 
+		 args="0 0 -0.2 0 0 0 wypt_m_seg2_start wypt_m_seg2_end 100" />
+
+
+
+	  <node pkg="import_manipulate_modul" name="imkm" type="imkm" output="screen">
+	    <rosparam
+	    file="$(find robot_control)/config/comau_param.yaml"
+	    command="load"
+	    />
+	  </node>
+    </group>
+</launch>

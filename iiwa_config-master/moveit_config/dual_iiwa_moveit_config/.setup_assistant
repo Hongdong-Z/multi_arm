@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: dual_iiwa_description
+    relative_path: urdf/dual_iiwa14.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/iiwa14.srdf
+  CONFIG:
+    author_name: hongdong
+    author_email: zhd7623518@gamil.com
+    generated_timestamp: 1639150977
