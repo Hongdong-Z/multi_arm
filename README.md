@@ -4,7 +4,9 @@
 **Figure 0: Overall process**
 
 
-Uploading output(compress-video-online.com).mp4…
+
+https://user-images.githubusercontent.com/77051392/181215889-259c168a-9fd1-4b51-8385-22d43bd2874c.mp4
+
 
 # How to build dual robot arm simulation control from 0
 Next, I will give you some advice on how to extend the existing system to the new robotic arm, which generally includes the following steps.
