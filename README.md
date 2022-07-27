@@ -25,6 +25,7 @@ In this step I assume that you already have a URDF file for a single robot arm, 
 ![Screenshot 2022-07-27 10:47:42](https://user-images.githubusercontent.com/77051392/181216790-8b755cec-dcd9-41b7-92a9-5daf22c65355.png)
 
 **Figure 2: Configuration example of the relative position relationship of the robot arm**
+
 ## moveit configuration
 In this step, you need to open a terminal in your workspace and enter:
 `roslaunch moveit_setup_assistant setup_assistant.launch`
@@ -41,6 +42,7 @@ In this step, the control files of the dual robotic arms have been designed, and
 ![workflow](https://user-images.githubusercontent.com/77051392/181216891-801b8f23-c33f-4cbb-8446-772c27620e2e.png)
 
 **Figure 4: Control principle of double manipulator**
+
 Since the urdf configuration files of different robots are written differently, you need to create a new param file in the robot_control/config/ directory. The specific parameters to be rewritten are shown in the following figure
 
 ![Screenshot 2022-07-27 11:07:46](https://user-images.githubusercontent.com/77051392/181216939-013ea189-8bd1-4d8a-9415-2b71348566fd.png)
@@ -48,22 +50,25 @@ Since the urdf configuration files of different robots are written differently, 
 **Figure 5: Parameter file example - comau**
 
 At the same time, you also need to add the corresponding param file path and loading method in launch.
+
 ![Screenshot_2022-07-27_11_12_45](uploads/2db063cdca6fad1322842aa236903f82/Screenshot_2022-07-27_11_12_45.png)
 
 **Figure 6: Control launch file modification example**
+
 
 ## Trajectory adjustment of the end effector of the robotic arm
 
 First, you need to publish the motion trajectory coordinates of the end effector of the robotic arm in moveit_config/demo.launch
 
-![DeepinScreenshot_select-area_20220727112945](uploads/4ba74b97ec12e593102ae3cd20bf339c/DeepinScreenshot_select-area_20220727112945.png)
+![DeepinScreenshot_select-area_20220727112945](https://user-images.githubusercontent.com/77051392/181217457-07363cd7-fbf4-41b5-8695-f0055f62d885.png)
 
 **Figure 7: Publish TF**
 
 At this stage, the coordinated point-to-point motion of the arms is realized through the /src/robot_control/scripts/adhoc_dispatcher.py file. Of course, you can also realize it through task_planning. Please refer to the task_planning section of this project for the specific principle and implementation.
 
 In the adhoc_dispatcher.py file, you need to provide the respective motion trajectories and motion modes of the arms, such as the figure below.
-![DeepinScreenshot_select-area_20220727112040](uploads/6d375c42e51466c88005af20a7e9dac5/DeepinScreenshot_select-area_20220727112040.png)
+
+![DeepinScreenshot_select-area_20220727112040](https://user-images.githubusercontent.com/77051392/181217416-7597898a-6af3-4724-83e4-6572cc48dc17.png)
 
 **Figure 8: Robot arm end effector trajectory and motion configuration**
 
