@@ -1,6 +1,7 @@
 
 # The position and function of this project in the overall process
-![whole_process](uploads/53ac7dbade0354da3920ea2671e2c36d/whole_process.png)
+![whole process](https://user-images.githubusercontent.com/77051392/181216600-cbee685f-3d24-4869-b1cd-b4fef672fb78.png)
+
 **Figure 0: Overall process**
 
 
@@ -14,19 +15,21 @@ Next, I will give you some advice on how to extend the existing system to the ne
 In this step I assume that you already have a URDF file for a single robot arm, all you need to do is to create a new URDF file for a dual manipulator.
 ### *1. Build the manipulator scenes and the 3D model of the coupling module*
 1. First, store the corresponding model created by the 3D modeling software as stl format in the meshes folder under the robot_description folder.
-![Screenshot_2022-07-27_10_37_23](uploads/5c4f1f22fae0271366b220ce118e6f8a/Screenshot_2022-07-27_10_37_23.png)
+
+![Screenshot 2022-07-27 10:37:23](https://user-images.githubusercontent.com/77051392/181216743-79e7511b-cd3a-41cc-b034-208ea063b925.png)
 
 **Figure 1: Workspace settings**
 
 2. Next, you need to establish the relative positional relationship of the dual robotic arms and import the corresponding modules into the new urdf file. It is worth noting here that the relative position relationship between the two robotic arms and the selection of the world coordinate system, if there is no special instruction, you can refer to the previous model file, and take the base of the left arm as the world coordinate system, and the right arm at the The x-axis square of the world coordinate system.
-![Screenshot_2022-07-27_10_47_42](uploads/2616f2353f6019ff0a7676164a836cf4/Screenshot_2022-07-27_10_47_42.png)
+
+![Screenshot 2022-07-27 10:47:42](https://user-images.githubusercontent.com/77051392/181216790-8b755cec-dcd9-41b7-92a9-5daf22c65355.png)
 
 **Figure 2: Configuration example of the relative position relationship of the robot arm**
 ## moveit configuration
 In this step, you need to open a terminal in your workspace and enter:
 `roslaunch moveit_setup_assistant setup_assistant.launch`
 and you will see.
-![Screenshot_2022-07-27_10_51_51](uploads/5e05ed85b590acce2ed540ac3fe1bae8/Screenshot_2022-07-27_10_51_51.png)
+![Screenshot 2022-07-27 10:51:51](https://user-images.githubusercontent.com/77051392/181216831-86d1d7c5-1d9b-4f77-b927-f8c58ba279c3.png)
 
 **Figure 3: Moveit Assistant setup**
 
@@ -34,11 +37,13 @@ Here you can choose to create a new moveit configuration package or modify the e
 http://docs.ros.org/en/melodic/api/moveit_tutorials/html/index.html
 ## ROS interface configuration
 In this step, the control files of the dual robotic arms have been designed, and the general working principle is shown in the figure below.
-![workflow](uploads/8bae271d2aa1b3d0fc660c7ea5c2370b/workflow.png)
+
+![workflow](https://user-images.githubusercontent.com/77051392/181216891-801b8f23-c33f-4cbb-8446-772c27620e2e.png)
 
 **Figure 4: Control principle of double manipulator**
 Since the urdf configuration files of different robots are written differently, you need to create a new param file in the robot_control/config/ directory. The specific parameters to be rewritten are shown in the following figure
-![Screenshot_2022-07-27_11_07_46](uploads/b6d4d34195b22adc5c239ac986819a04/Screenshot_2022-07-27_11_07_46.png)
+
+![Screenshot 2022-07-27 11:07:46](https://user-images.githubusercontent.com/77051392/181216939-013ea189-8bd1-4d8a-9415-2b71348566fd.png)
 
 **Figure 5: Parameter file example - comau**
 
