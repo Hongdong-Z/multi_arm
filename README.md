@@ -3,6 +3,9 @@
 ![whole_process](uploads/53ac7dbade0354da3920ea2671e2c36d/whole_process.png)
 **Figure 0: Overall process**
 
+
+Uploading output(compress-video-online.com).mp4…
+
 # How to build dual robot arm simulation control from 0
 Next, I will give you some advice on how to extend the existing system to the new robotic arm, which generally includes the following steps.
 ## URDF writing
