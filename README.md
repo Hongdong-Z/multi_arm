@@ -51,7 +51,8 @@ Since the urdf configuration files of different robots are written differently, 
 
 At the same time, you also need to add the corresponding param file path and loading method in launch.
 
-![Screenshot_2022-07-27_11_12_45](uploads/2db063cdca6fad1322842aa236903f82/Screenshot_2022-07-27_11_12_45.png)
+![Screenshot 2022-07-27 11:12:45](https://user-images.githubusercontent.com/77051392/181217914-fb3171b0-48f1-4406-a07a-4581b4fef38b.png)
+
 
 **Figure 6: Control launch file modification example**
 
